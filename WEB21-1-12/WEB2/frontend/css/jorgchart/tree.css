@@ -1,0 +1,141 @@
+.node {
+    cursor: pointer;
+}
+
+.node .circle {
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+
+/* .node rect {
+    fill: #1ab394;
+    stroke: #1ab394;
+    stroke-width: 1.5px;
+} */
+
+.node text {
+    font: 12px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+#tree {
+    width: 100% !important;
+    height: 1200px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#content {
+    position: absolute;
+    display: none;
+}
+
+.list-group {
+    width: 100px;
+}
+
+.list-group .list-group-item {
+    text-align: center
+}
+
+.node .hoverBox {
+    display: none;
+}
+
+.node image {
+    width: 16px;
+    height: 16px;
+}
+
+.node .imageNode {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.node .block {
+    display: block
+}
+
+.node .none {
+    display: none;
+}
+
+.addNode,
+.editNode,
+.removeNode {
+    opacity: 0;
+}
+
+.fixedRightBox {
+    position: fixed;
+    top: 290px;
+    right: 15px;
+}
+
+.fixedRightBox .top {
+    height: 40px;
+    line-height: 28px;
+}
+
+
+/* user */
+
+.carousel-inner,
+.carousel-inner .item {
+    height: 100%;
+}
+
+#myCarousel {
+    height: 100%;
+}
+
+.carousel-indicators {
+    width: 40px;
+    top: 170px;
+    left: auto;
+    right: 15px;
+    height: 100px;
+    margin-left: 0;
+}
+
+.carousel-indicators li {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    border: 1px solid #c2c2c2;
+    background: #c2c2c2;
+    display: block;
+    text-indent: 0;
+    font-size: 16px;
+    color: #fff;
+    line-height: 40px;
+}
+
+.carousel-indicators .active {
+    width: 40px;
+    height: 40px;
+    background: #c2c2c2;
+}
+
+.carousel-inner .item {
+    overflow: auto;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    border: 1px solid #ccd !important;
+}
+
+#optypebox span {
+    line-height: 34px;
+    padding: 5px 15px;
+}

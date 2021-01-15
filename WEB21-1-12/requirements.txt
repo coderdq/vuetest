@@ -1,0 +1,15 @@
+pandas==0.25.3
+channels==2.3.0
+numpy==1.17.4
+psutil==5.7.2
+Django==2.2
+PyVISA==1.10.1
+xlwings==0.16.0
+PyMySQL==0.9.3
+pywin32==226
+pywinauto==0.6.8
+modbus_tk==1.1.1
+asgiref==2.3.2
+django_celery==3.3.1
+pyserial==3.5
+visa==2.21.0
