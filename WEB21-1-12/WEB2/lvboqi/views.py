@@ -7,7 +7,7 @@ from shutil import copyfile
 from celery.app.control import Control
 from config.celery import app
 from django.views.decorators.csrf import csrf_exempt
-from django.core import  serializers
+from django.core import serializers
 from django.http import JsonResponse,StreamingHttpResponse
 
 from lvboqi.models import LVBOQI
