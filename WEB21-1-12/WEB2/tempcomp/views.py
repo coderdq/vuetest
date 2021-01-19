@@ -6,8 +6,8 @@ from shutil import copyfile
 from celery.app.control import Control
 from config.celery import app
 from django.views.decorators.csrf import csrf_exempt
-from django.core import  serializers
-from django.http import JsonResponse,StreamingHttpResponse
+from django.core import serializers
+from django.http import JsonResponse, StreamingHttpResponse
 
 from .models import TCompModel
 from .tasks import dotest
@@ -17,6 +17,8 @@ from commoninterface.utils import make_zip
 logger = logging.getLogger('ghost')
 
 do_process = None
+
+
 # Create your views here.
 
 def stop_process():
@@ -29,6 +31,7 @@ def stop_process():
             do_process = None
     except Exception as e:
         logger.error(e)
+
 
 def write_file(fp):
     if fp is None:
@@ -47,10 +50,11 @@ def write_file(fp):
     finally:
         destination.close()
 
+
 @csrf_exempt
 def big_file_download(request):
     def file_iterator(file_name, chunk_size=512):
-        with open(file_name,'rb') as f:
+        with open(file_name, 'rb') as f:
             while True:
                 c = f.read(chunk_size)
                 if c:
@@ -60,7 +64,7 @@ def big_file_download(request):
 
     postbody = request.body
     data = json.loads(postbody)
-    the_file_name=data.get('filepath','')
+    the_file_name = data.get('filepath', '')
 
     if the_file_name:
         the_path = os.path.dirname(os.path.dirname(the_file_name))  # 上两级目录
@@ -72,11 +76,12 @@ def big_file_download(request):
         response['Content-Disposition'] = "attachment; filename = {}".format('export.zip')
         return response
 
+
 @csrf_exempt
 def show_tempcomp_history(request):
     response = {}
     try:
-        params =TCompModel.objects.all()
+        params = TCompModel.objects.all()
         response['params'] = json.loads(serializers.serialize("json", params))
         response['msg'] = 'success'
         response['error_num'] = 0
@@ -84,6 +89,7 @@ def show_tempcomp_history(request):
         response['msg'] = str(e)
         response['error_num'] = 1
     return JsonResponse(response)
+
 
 @csrf_exempt
 def clear_tempcomp_history(request):
@@ -97,6 +103,7 @@ def clear_tempcomp_history(request):
         response['msg'] = str(e)
         response['error_num'] = 1
     return JsonResponse(response)
+
 
 @csrf_exempt
 def tempcomp_upload(request):
@@ -119,7 +126,7 @@ def tempcomp_upload(request):
                 tcomp_params.fsvip = fsvip
                 tcomp_params.dir = new_path
                 fsvconf = {'IP': fsvip, 'DIR': new_path}
-                bdconf={'IP':boardip}
+                bdconf = {'IP': boardip}
                 thconf = {}
                 if port:
                     tcomp_params.port = int(port)
@@ -128,29 +135,36 @@ def tempcomp_upload(request):
                 # 开始测试
 
                 global do_process
-                do_process = dotest.delay(fsvconf,bdconf,thconf)
+                do_process = dotest.delay(fsvconf, bdconf, thconf)
                 ret = do_process.get(timeout=60 * 60)
-                message='测试失败'
-                endpath=''
-                if not isinstance(ret,tuple):
+                message = '测试失败'
+                endpath = ''
+                if not isinstance(ret, tuple):
                     message = '测试成功' if ret else '测试失败'
                 else:
-                    message='测试成功' if ret[0] else '测试失败'
-                    endpath=ret[1]
-                do_process=None
-                return JsonResponse({'result': ret,'message':message,'filepath':endpath})
+                    message = '测试成功' if ret[0] else '测试失败'
+                    endpath = ret[1]
+                do_process = None
+                return JsonResponse({'result': ret, 'message': message, 'filepath': endpath})
             else:
-                return JsonResponse({'result': False,'message': '测试模板缺失'})
+                return JsonResponse({'result': False, 'message': '测试模板缺失'})
     except Exception as e:
         logger.error('lvboqi_upload error:{}'.format(e))
-        return JsonResponse({'result': False,'message':'测试失败'})
+        return JsonResponse({'result': False, 'message': '测试失败'})
+
 
 @csrf_exempt
 def set_tempcomp_history(request):
+    """
+    记录温度补偿历史记录
+    :param request:
+    :return:
+    """
     try:
         if request.method == 'POST':
             postbody = request.body
             data = json.loads(postbody)
+            # 记录提交的高低温箱的串口数据
             port = data.get('port', '')
             print(data)
             thconf = {}
@@ -158,15 +172,17 @@ def set_tempcomp_history(request):
                 thconf = {
                     "PORT": port
                 }
+            # 记录提交的频谱仪的IP地址以及测试模板的路径
             fsvconf = {
                 'IP': data.get('fsvip'),
                 'DIR': data.get('dir')
             }
             bdconf = {'IP': data.get('boardip')}
             # 开始测试
+            
 
             global do_process
-            do_process = dotest.delay(fsvconf,bdconf,thconf)
+            do_process = dotest.delay(fsvconf, bdconf, thconf)
             print('do_process={}'.format(do_process))
             ret = do_process.get(timeout=60 * 60)
             message = '测试失败'
@@ -178,7 +194,7 @@ def set_tempcomp_history(request):
                 endpath = ret[1]
             do_process = None
             # message = '测试完毕'
-            return JsonResponse({'result': ret, 'message': message,'filepath':endpath})
+            return JsonResponse({'result': ret, 'message': message, 'filepath': endpath})
     except Exception as e:
         logger.error('set_lvboqi_history error:{}'.format(e))
         return JsonResponse({'result': False, 'message': '测试失败'})
